@@ -82,3 +82,8 @@ com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 fabric.properties
+
+# Docker
+docker/haproxy/data
+docker/kafka/data
+docker/redis/data
