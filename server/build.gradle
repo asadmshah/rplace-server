@@ -1,1 +1,21 @@
+apply plugin: 'application'
+apply plugin: 'docker'
+
 version '0.1.0'
+
+mainClassName = 'com.asadmshah.rplace.server.ServerKt'
+
+docker {
+    baseImage = 'openjdk:8'
+}
+
+distDocker {
+
+}
+
+dependencies {
+    compile project(':cache')
+
+    compile group: 'io.undertow', name: 'undertow-core', version: '1.4.16.Final'
+    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
+}
