@@ -1,7 +1,6 @@
 package com.asadmshah.rplace.server.handlers
 
 import com.asadmshah.rplace.models.DrawEvent
-import com.asadmshah.rplace.models.DrawEventsBatch
 import com.asadmshah.rplace.models.Position
 import com.asadmshah.rplace.pubsub.PubSubClient
 import io.reactivex.disposables.Disposable
@@ -28,15 +27,11 @@ internal class StreamHandler @Inject constructor(private val pubSub: PubSubClien
         }
 
         disposable = pubSub
-                .subscribe(-1, "${System.currentTimeMillis()}")
-                .map {
-                    Pair(it, ByteBuffer.wrap(it.toByteArray()))
-                }
+                .subscribe(-1)
                 .observeOn(Schedulers.from(channel.ioThread.worker))
                 .subscribe(
-                        { (events:DrawEventsBatch, _:ByteBuffer) ->
+                        { events ->
                             WebSockets.sendText(events.toString(), channel, null)
-//                            WebSockets.sendBinary(byteBuffer, channel, null)
                         },
                         { throwable: Throwable ->
                             throwable.printStackTrace()
