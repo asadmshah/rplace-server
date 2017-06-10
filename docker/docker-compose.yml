@@ -8,10 +8,19 @@ services:
 
   web1:
     image: rplace-server/server:0.1.0
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: "kafka1:9092,kafka2:9092,kafka3:9092"
+      KAFKA_TOPIC: "rplace"
   web2:
     image: rplace-server/server:0.1.0
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: "kafka1:9092,kafka2:9092,kafka3:9092"
+      KAFKA_TOPIC: "rplace"
   web3:
     image: rplace-server/server:0.1.0
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: "kafka1:9092,kafka2:9092,kafka3:9092"
+      KAFKA_TOPIC: "rplace"
 
   redis:
     build: ./redis

@@ -87,3 +87,6 @@ fabric.properties
 docker/haproxy/data
 docker/kafka/data
 docker/redis/data
+
+# Generated Protos
+/models/gen/

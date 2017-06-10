@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package rplace;
+
+option java_multiple_files = true;
+option java_package = "com.asadmshah.rplace.models";
+option optimize_for = LITE_RUNTIME;
+
+message Position {
+    uint32 x = 1;
+    uint32 y = 2;
+}
+
+message DrawEvent {
+    Position position = 2;
+    uint32 color = 3;
+    uint64 datetime = 4;
+}
+
+message DrawEventsBatch {
+    repeated DrawEvent events = 1;
+    uint64 offset = 2;
+}

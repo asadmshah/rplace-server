@@ -1,2 +1,8 @@
 version '0.1.0'
 
+dependencies {
+    compile project(':models')
+
+    compile group: 'org.apache.kafka', name: 'kafka-clients', version: '0.10.2.1'
+    compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.1.0'
+}

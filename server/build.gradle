@@ -1,9 +1,18 @@
 apply plugin: 'application'
 apply plugin: 'docker'
+apply plugin: 'idea'
 
 version '0.1.0'
 
 mainClassName = 'com.asadmshah.rplace.server.ServerKt'
+
+sourceSets {
+    main {
+        java {
+            srcDir "${buildDir}/generated/source/kapt/main"
+        }
+    }
+}
 
 docker {
     baseImage = 'openjdk:8'
@@ -14,7 +23,8 @@ distDocker {
 }
 
 dependencies {
-    compile project(':cache')
+    compile project(':models')
+    compile project(':pubsub')
 
     compile group: 'io.undertow', name: 'undertow-core', version: '1.4.16.Final'
     compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
