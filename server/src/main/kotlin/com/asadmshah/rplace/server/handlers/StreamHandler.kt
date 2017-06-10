@@ -16,6 +16,8 @@ import javax.inject.Inject
 internal class StreamHandler @Inject constructor(private val pubSub: PubSubClient) : WebSocketConnectionCallback {
 
     companion object {
+        const val KEY = "StreamHandler"
+
         private val LOGGER = LoggerFactory.getLogger(StreamHandler::class.java)
     }
 
