@@ -1,10 +1,9 @@
 package com.asadmshah.rplace.pubsub
 
-import com.asadmshah.rplace.models.DrawEvent
 import dagger.Module
 import dagger.Provides
+import io.reactivex.BackpressureStrategy
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.ReplaySubject
 import java.util.*
 import javax.inject.Singleton
 
@@ -14,27 +13,32 @@ class PubSubClientModule {
     @Provides
     @Singleton
     fun pubSubClient(): PubSubClient {
-        val producerProps = Properties().apply {
+        return PubSubClientImpl(producerClient(), consumerClient())
+    }
+
+    private fun producerClient(): ProducerClient {
+        val properties = Properties().apply {
             put("bootstrap.servers", System.getenv("KAFKA_BOOTSTRAP_SERVERS"))
             put("key.serializer", PositionSerializer::class.java.name)
             put("value.serializer", DrawEventSerializer::class.java.name)
             put("acks", "0")
             put("linger.ms", "500")
         }
-        val producer = ProducerClient(producerProps, System.getenv("KAFKA_TOPIC"))
+        return ProducerClient(properties, System.getenv("KAFKA_TOPIC"))
+    }
 
-        val consumerProps = Properties().apply {
+    private fun consumerClient(): ConsumerClient {
+        val properties = Properties().apply {
             put("bootstrap.servers", System.getenv("KAFKA_BOOTSTRAP_SERVERS"))
             put("key.deserializer", PositionSerializer::class.java.name)
             put("value.deserializer", DrawEventSerializer::class.java.name)
             put("enable.auto.commit", "false")
+            put("group.id", System.getenv("KAFKA_GROUP"))
         }
-        val subject = ReplaySubject.createWithSize<Pair<Long, DrawEvent>>(4096)
-        // Start Consumer Thread.
-        Thread(KafkaConsumerRunnable(consumerProps, System.getenv("KAFKA_TOPIC"), System.getenv("KAFKA_GROUP"), subject), "Kafka-Consumer-Thread").start()
-        val consumer = ConsumerClient(subject, 64, Schedulers.computation())
-
-        return PubSubClientImpl(producer, consumer)
+        val topic = System.getenv("KAFKA_TOPIC")
+        val strategy = BackpressureStrategy.BUFFER
+        val observable = KafkaConsumerOnSubscribe.create(properties, topic, strategy, Schedulers.single())
+        return ConsumerClient(observable, 4096, Schedulers.computation())
     }
 
 }
