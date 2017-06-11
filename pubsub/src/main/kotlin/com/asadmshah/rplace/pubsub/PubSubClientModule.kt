@@ -5,6 +5,7 @@ import dagger.Provides
 import io.reactivex.BackpressureStrategy
 import io.reactivex.schedulers.Schedulers
 import java.util.*
+import java.util.concurrent.Executors
 import javax.inject.Singleton
 
 @Module
@@ -37,7 +38,8 @@ class PubSubClientModule {
         }
         val topic = System.getenv("KAFKA_TOPIC")
         val strategy = BackpressureStrategy.BUFFER
-        val observable = KafkaConsumerOnSubscribe.create(properties, topic, strategy, Schedulers.single())
+        val scheduler = Schedulers.from(Executors.newSingleThreadScheduledExecutor())
+        val observable = KafkaConsumerOnSubscribe.create(properties, topic, strategy, scheduler)
         return ConsumerClient(observable, 4096, Schedulers.computation())
     }
 
