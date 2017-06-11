@@ -1,9 +1,13 @@
 package com.asadmshah.rplace.client
 
+import okhttp3.Response
+import okhttp3.WebSocket
+import okio.ByteString
+
 sealed class WebSocketEvent {
-    class OnOpen(val webSocket: okhttp3.WebSocket, val response: okhttp3.Response) : com.asadmshah.rplace.client.WebSocketEvent()
-    class OnTextMessage(val webSocket: okhttp3.WebSocket, val text: String) : com.asadmshah.rplace.client.WebSocketEvent()
-    class OnBinaryMessage(val webSocket: okhttp3.WebSocket, val bytes: okio.ByteString) : com.asadmshah.rplace.client.WebSocketEvent()
-    class OnClosing(val webSocket: okhttp3.WebSocket, val code: Int, val reason: String) : com.asadmshah.rplace.client.WebSocketEvent()
-    class OnClosed(val webSocket: okhttp3.WebSocket, val code: Int, val reason: String) : com.asadmshah.rplace.client.WebSocketEvent()
+    class OnOpen(val webSocket: WebSocket, val response: Response) : WebSocketEvent()
+    class OnTextMessage(val webSocket: WebSocket, val text: String) : WebSocketEvent()
+    class OnBinaryMessage(val webSocket: WebSocket, val bytes: ByteString) : WebSocketEvent()
+    class OnClosing(val webSocket: WebSocket, val code: Int, val reason: String) : WebSocketEvent()
+    class OnClosed(val webSocket: WebSocket, val code: Int, val reason: String) : WebSocketEvent()
 }

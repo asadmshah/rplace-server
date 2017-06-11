@@ -1,13 +1,21 @@
 package com.asadmshah.rplace.client
 
+import com.asadmshah.rplace.models.DrawEventsBatch
+import io.reactivex.BackpressureStrategy
+import io.reactivex.Flowable
+import io.reactivex.Maybe
+import io.reactivex.Observable
+import okhttp3.OkHttpClient
+import okhttp3.Request
+
 internal class PlaceClientImpl(private val host: String, private val port: Int) : PlaceClient {
 
-    private val client = okhttp3.OkHttpClient()
+    private val client = OkHttpClient()
 
-    override fun canvas(): io.reactivex.Maybe<Pair<Long, ByteArray>> {
-        return io.reactivex.Maybe
+    override fun canvas(): Maybe<Pair<Long, ByteArray>> {
+        return Maybe
                 .fromCallable {
-                    val request = okhttp3.Request.Builder().url("http://$host:$port/canvas").build()
+                    val request = Request.Builder().url("http://$host:$port/canvas").build()
 
                     client.newCall(request).execute().use { response ->
                         if (!response.isSuccessful) null else {
@@ -19,21 +27,24 @@ internal class PlaceClientImpl(private val host: String, private val port: Int) 
                 }
     }
 
-    override fun stream(): io.reactivex.Observable<DrawingSocketEvents> {
-        val request = okhttp3.Request.Builder().url("ws://$host:$port/stream").build()
+    override fun stream(offset: Long): Observable<DrawingSocketEvents> {
+        val request = Request.Builder()
+                .url("ws://$host:$port/stream")
+                .header("X-Offset", offset.toString())
+                .build()
 
-        return io.reactivex.Flowable
-                .create(com.asadmshah.rplace.server.client.WebSocketOnSubscribe(request), io.reactivex.BackpressureStrategy.BUFFER)
+        return Flowable
+                .create(WebSocketOnSubscribe(request), BackpressureStrategy.BUFFER)
                 .filter {
-                    it is com.asadmshah.rplace.server.client.WebSocketEvent.OnOpen || it is com.asadmshah.rplace.server.client.WebSocketEvent.OnClosing || it is com.asadmshah.rplace.server.client.WebSocketEvent.OnBinaryMessage
+                    it is WebSocketEvent.OnOpen || it is WebSocketEvent.OnClosing || it is WebSocketEvent.OnBinaryMessage
                 }
                 .map<DrawingSocketEvents> {
                     when (it) {
-                        is com.asadmshah.rplace.server.client.WebSocketEvent.OnOpen -> com.asadmshah.rplace.server.client.DrawingSocketEvents.OnOpened(it.webSocket)
-                        is com.asadmshah.rplace.server.client.WebSocketEvent.OnClosing -> com.asadmshah.rplace.server.client.DrawingSocketEvents.OnClosed(it.webSocket)
-                        is com.asadmshah.rplace.server.client.WebSocketEvent.OnBinaryMessage -> {
-                            val event = com.asadmshah.rplace.models.DrawEventsBatch.parseFrom(it.bytes.toByteArray())
-                            com.asadmshah.rplace.server.client.DrawingSocketEvents.OnDrawEvent(it.webSocket, event)
+                        is WebSocketEvent.OnOpen -> DrawingSocketEvents.OnOpened(it.webSocket)
+                        is WebSocketEvent.OnClosing -> DrawingSocketEvents.OnClosed(it.webSocket)
+                        is WebSocketEvent.OnBinaryMessage -> {
+                            val event = DrawEventsBatch.parseFrom(it.bytes.toByteArray())
+                            DrawingSocketEvents.OnDrawEvent(it.webSocket, event)
                         }
                         else -> {
                             null

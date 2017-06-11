@@ -1,9 +1,12 @@
 package com.asadmshah.rplace.client
 
+import io.reactivex.Maybe
+import io.reactivex.Observable
+
 interface PlaceClient {
 
-    fun canvas(): io.reactivex.Maybe<Pair<Long, ByteArray>>
+    fun canvas(): Maybe<Pair<Long, ByteArray>>
 
-    fun stream(): io.reactivex.Observable<DrawingSocketEvents>
+    fun stream(offset: Long): Observable<DrawingSocketEvents>
 
 }

@@ -1,44 +1,48 @@
 package com.asadmshah.rplace.client
 
-internal class WebSocketOnSubscribe(private val request: okhttp3.Request): io.reactivex.FlowableOnSubscribe<Any> {
+import io.reactivex.FlowableOnSubscribe
+import okhttp3.*
+import okio.ByteString
+
+internal class WebSocketOnSubscribe(private val request: Request): FlowableOnSubscribe<Any> {
 
     override fun subscribe(emitter: io.reactivex.FlowableEmitter<Any>) {
-        val client = okhttp3.OkHttpClient()
+        val client = OkHttpClient()
 
-        val socket = client.newWebSocket(request, object : okhttp3.WebSocketListener() {
-            override fun onOpen(webSocket: okhttp3.WebSocket, response: okhttp3.Response) {
+        val socket = client.newWebSocket(request, object : WebSocketListener() {
+            override fun onOpen(webSocket: WebSocket, response: Response) {
                 if (!emitter.isCancelled) {
-                    emitter.onNext(com.asadmshah.rplace.server.client.WebSocketEvent.OnOpen(webSocket, response))
+                    emitter.onNext(WebSocketEvent.OnOpen(webSocket, response))
                 }
             }
 
-            override fun onFailure(webSocket: okhttp3.WebSocket, t: Throwable, response: okhttp3.Response) {
+            override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response) {
                 if (!emitter.isCancelled) {
-                    emitter.onError(com.asadmshah.rplace.server.client.WebSocketFailure(webSocket, response, t))
+                    emitter.onError(WebSocketFailure(webSocket, response, t))
                 }
             }
 
-            override fun onClosing(webSocket: okhttp3.WebSocket, code: Int, reason: String) {
+            override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
                 if (!emitter.isCancelled) {
-                    emitter.onNext(com.asadmshah.rplace.server.client.WebSocketEvent.OnClosing(webSocket, code, reason))
+                    emitter.onNext(WebSocketEvent.OnClosing(webSocket, code, reason))
                 }
             }
 
-            override fun onMessage(webSocket: okhttp3.WebSocket, text: String) {
+            override fun onMessage(webSocket: WebSocket, text: String) {
                 if (!emitter.isCancelled) {
-                    emitter.onNext(com.asadmshah.rplace.server.client.WebSocketEvent.OnTextMessage(webSocket, text))
+                    emitter.onNext(WebSocketEvent.OnTextMessage(webSocket, text))
                 }
             }
 
-            override fun onMessage(webSocket: okhttp3.WebSocket, bytes: okio.ByteString) {
+            override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
                 if (!emitter.isCancelled) {
-                    emitter.onNext(com.asadmshah.rplace.server.client.WebSocketEvent.OnBinaryMessage(webSocket, bytes))
+                    emitter.onNext(WebSocketEvent.OnBinaryMessage(webSocket, bytes))
                 }
             }
 
-            override fun onClosed(webSocket: okhttp3.WebSocket, code: Int, reason: String) {
+            override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
                 if (!emitter.isCancelled) {
-                    emitter.onNext(com.asadmshah.rplace.server.client.WebSocketEvent.OnClosed(webSocket, code, reason))
+                    emitter.onNext(WebSocketEvent.OnClosed(webSocket, code, reason))
                     emitter.onComplete()
                 }
             }
