@@ -1,4 +1,4 @@
-package com.asadmshah.rplace.server.client
+package com.asadmshah.rplace.client
 
 import com.asadmshah.rplace.models.DrawEventsBatch
 import okhttp3.WebSocket
