@@ -5,3 +5,5 @@ include 'pubsub'
 include 'cache'
 include 'models'
 include 'tool-draw-committer'
+include 'client'
+
