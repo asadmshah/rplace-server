@@ -1,6 +1,5 @@
 rootProject.name = 'rplace-server'
 
-include 'core'
 include 'server'
 include 'pubsub'
 include 'cache'
