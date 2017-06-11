@@ -1,2 +1,8 @@
 version '0.1.0'
 
+dependencies {
+    compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.1.0'
+    compile group: 'biz.paluch.redis', name: 'lettuce', version: '4.3.2.Final'
+    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
+}
+

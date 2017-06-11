@@ -12,18 +12,30 @@ services:
       KAFKA_BOOTSTRAP_SERVERS: "kafka1:9092,kafka2:9092,kafka3:9092"
       KAFKA_TOPIC: "rplace"
       KAFKA_GROUP: "web1"
+      REDIS_HOST: "redis"
+      REDIS_PORT: "6379"
+      REDIS_PASS: "rplace@123"
+      REDIS_DATABASE: "1"
   web2:
     image: rplace-server/server:0.1.0
     environment:
       KAFKA_BOOTSTRAP_SERVERS: "kafka1:9092,kafka2:9092,kafka3:9092"
       KAFKA_TOPIC: "rplace"
       KAFKA_GROUP: "web2"
+      REDIS_HOST: "redis"
+      REDIS_PORT: "6379"
+      REDIS_PASS: "rplace@123"
+      REDIS_DATABASE: "1"
   web3:
     image: rplace-server/server:0.1.0
     environment:
       KAFKA_BOOTSTRAP_SERVERS: "kafka1:9092,kafka2:9092,kafka3:9092"
       KAFKA_TOPIC: "rplace"
       KAFKA_GROUP: "web3"
+      REDIS_HOST: "redis"
+      REDIS_PORT: "6379"
+      REDIS_PASS: "rplace@123"
+      REDIS_DATABASE: "1"
 
   redis:
     build: ./redis

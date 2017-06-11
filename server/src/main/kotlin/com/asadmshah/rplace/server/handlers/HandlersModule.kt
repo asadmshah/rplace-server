@@ -4,6 +4,7 @@ import dagger.Module
 import dagger.Provides
 import io.undertow.Handlers.websocket
 import io.undertow.server.HttpHandler
+import io.undertow.server.handlers.BlockingHandler
 import javax.inject.Named
 
 @Module
@@ -12,7 +13,7 @@ class HandlersModule {
     @Provides
     @Named(CanvasHandler.KEY)
     internal fun canvasHandler(handler: CanvasHandler): HttpHandler {
-        return handler
+        return BlockingHandler(handler)
     }
 
     @Provides

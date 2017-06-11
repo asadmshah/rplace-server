@@ -25,6 +25,7 @@ distDocker {
 dependencies {
     compile project(':models')
     compile project(':pubsub')
+    compile project(':cache')
 
     compile group: 'io.undertow', name: 'undertow-core', version: '1.4.16.Final'
     compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
