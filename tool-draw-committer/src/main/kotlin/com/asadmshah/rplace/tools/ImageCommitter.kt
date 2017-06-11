@@ -69,4 +69,5 @@ fun RedisCommands<ByteArray, ByteArray>.updateState(offset: Long, bitmap: ByteAr
     set(BitmapRefresher.KEY_OFFSET, offset.toString().toByteArray())
     set(BitmapRefresher.KEY_BITMAP, bitmap)
     exec()
+    bgsave()
 }
