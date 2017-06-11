@@ -15,21 +15,21 @@ class CacheModule {
 
     @Provides
     @Singleton
-    fun bitmapCache(): BitmapCache {
-        val redis = createRedisClient().sync()
-        val scheduler = Schedulers.from(Executors.newSingleThreadScheduledExecutor())
-        val refresher = BitmapRefresher.create(redis, Schedulers.computation(), scheduler)
-        return BitmapCacheImpl(refresher)
-    }
-
-    private fun createRedisClient(): StatefulRedisConnection<ByteArray, ByteArray> {
+    fun redisClient(): StatefulRedisConnection<ByteArray, ByteArray> {
         val uri = RedisURI.Builder
                 .redis(System.getenv("REDIS_HOST"), System.getenv("REDIS_PORT").toInt())
                 .withPassword(System.getenv("REDIS_PASS"))
                 .withDatabase(System.getenv("REDIS_DATABASE").toInt())
                 .build()
-
         return RedisClient.create(uri).connect(ByteArrayCodec())
+    }
+
+    @Provides
+    @Singleton
+    fun bitmapCache(redis: StatefulRedisConnection<ByteArray, ByteArray>): BitmapCache {
+        val scheduler = Schedulers.from(Executors.newSingleThreadScheduledExecutor())
+        val refresher = BitmapRefresher.create(redis.sync(), Schedulers.computation(), scheduler)
+        return BitmapCacheImpl(refresher)
     }
 
 }

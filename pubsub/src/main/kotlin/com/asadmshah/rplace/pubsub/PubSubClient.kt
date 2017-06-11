@@ -8,5 +8,5 @@ interface PubSubClient {
 
     fun publish(event: DrawEvent)
 
-    fun subscribe(offset: Int = -1): Observable<DrawEventsBatch>
+    fun subscribe(offset: Long = -1): Observable<DrawEventsBatch>
 }

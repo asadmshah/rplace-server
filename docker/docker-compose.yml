@@ -44,6 +44,17 @@ services:
     volumes:
       - ./redis/data:/data
 
+  drawcommitter:
+    image: rplace-server/tool-draw-committer:0.1.0
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: "kafka1:9092,kafka2:9092,kafka3:9092"
+      KAFKA_TOPIC: "rplace"
+      KAFKA_GROUP: "draw-commiter"
+      REDIS_HOST: "redis"
+      REDIS_PORT: "6379"
+      REDIS_PASS: "rplace@123"
+      REDIS_DATABASE: "1"
+
   zookeeper:
     image: zookeeper
 

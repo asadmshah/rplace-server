@@ -15,7 +15,7 @@ internal class PubSubClientImpl(val producer: ProducerClient, val consumer: Cons
         producer.publish(event)
     }
 
-    override fun subscribe(offset: Int): Observable<DrawEventsBatch> {
+    override fun subscribe(offset: Long): Observable<DrawEventsBatch> {
         return consumer.observe(offset)
     }
 }

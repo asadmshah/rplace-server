@@ -25,7 +25,7 @@ internal class ConsumerClient(observable: Observable<ConsumerRecord<Position, Dr
         observable.map { it.offset() to it.value() }.subscribe(subject)
     }
 
-    fun observe(offset: Int): Observable<DrawEventsBatch> {
+    fun observe(offset: Long): Observable<DrawEventsBatch> {
         return subject
                 .observeOn(scheduler)
                 .filter { offset < 0 || offset < it.first }
