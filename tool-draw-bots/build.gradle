@@ -1,0 +1,21 @@
+apply plugin: 'application'
+apply plugin: 'docker'
+apply plugin: 'idea'
+
+version '0.1.0'
+
+mainClassName = "com.asadmshah.rplace.tools.DrawBotsKt"
+
+docker {
+    baseImage = 'openjdk:8'
+}
+
+distDocker {
+
+}
+
+dependencies {
+    compile project(':client')
+
+    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
+}

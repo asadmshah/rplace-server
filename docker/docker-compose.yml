@@ -55,6 +55,39 @@ services:
       REDIS_PASS: "rplace@123"
       REDIS_DATABASE: "1"
 
+  drawbots1:
+    image: rplace-server/tool-draw-bots:0.1.0
+    environment:
+      ENDPOINT_HOST: "haproxy"
+      ENDPOINT_PORT: 80
+      IMAGE_OUTPUT_DIR: "/drawbots"
+      CLIENT_COUNT: 10
+      INTERVAL_MILLIS: 50
+    volumes:
+      - ./drawbots/data:/drawbots
+
+  drawbots2:
+    image: rplace-server/tool-draw-bots:0.1.0
+    environment:
+      ENDPOINT_HOST: "haproxy"
+      ENDPOINT_PORT: 80
+      IMAGE_OUTPUT_DIR: "/drawbots"
+      CLIENT_COUNT: 10
+      INTERVAL_MILLIS: 50
+    volumes:
+      - ./drawbots/data:/drawbots
+
+  drawbots3:
+    image: rplace-server/tool-draw-bots:0.1.0
+    environment:
+      ENDPOINT_HOST: "haproxy"
+      ENDPOINT_PORT: 80
+      IMAGE_OUTPUT_DIR: "/drawbots"
+      CLIENT_COUNT: 10
+      INTERVAL_MILLIS: 50
+    volumes:
+      - ./drawbots/data:/drawbots
+
   zookeeper:
     image: zookeeper
 

@@ -6,4 +6,5 @@ include 'cache'
 include 'models'
 include 'tool-draw-committer'
 include 'client'
+include 'tool-draw-bots'
 

@@ -45,11 +45,12 @@ internal class StreamHandler @Inject constructor(private val pubSub: PubSubClien
                 val data = BufferedBinaryMessage(64, false)
                 data.read(messageChannel, object : WebSocketCallback<BufferedBinaryMessage> {
                     override fun complete(channel: WebSocketChannel, context: BufferedBinaryMessage) {
-                        if (context.data.resource.isNotEmpty()) context.data.resource.let { payload ->
-                            val size = Buffers.remaining(payload).toInt()
+                        val resource = context.data.resource
+                        if (resource.isNotEmpty()) {
+                            val size = Buffers.remaining(resource).toInt()
                             if (size > 0) {
                                 val buffer = ByteBuffer.allocate(size)
-                                payload.forEach { buffer.put(it) }
+                                resource.forEach { buffer.put(it) }
                                 buffer.flip()
 
                                 try {
