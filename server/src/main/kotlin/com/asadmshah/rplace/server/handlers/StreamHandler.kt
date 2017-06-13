@@ -54,7 +54,10 @@ internal class StreamHandler @Inject constructor(private val pubSub: PubSubClien
                                 buffer.flip()
 
                                 try {
-                                    pubSub.publish(DrawEvent.parseFrom(buffer))
+                                    val event = DrawEvent.parseFrom(buffer)
+                                    if (event.position.x in 0..1023 && event.position.y in 0..1023) {
+                                        pubSub.publish(DrawEvent.parseFrom(buffer))
+                                    }
                                 } catch (e: Exception) {
                                     LOGGER.error("Unable to Publish Message.", e)
                                     channel.close()
