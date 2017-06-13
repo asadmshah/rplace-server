@@ -91,3 +91,4 @@ docker/redis/data
 # Generated Protos
 /models/gen/
 /tool-draw-committer/build/
+/docker/drawbots/data/
