@@ -12,7 +12,6 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "com.github.jengelman.gradle.plugins:shadow:2.0.0"
         classpath 'se.transmode.gradle:gradle-docker:1.2'
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.1'
     }
