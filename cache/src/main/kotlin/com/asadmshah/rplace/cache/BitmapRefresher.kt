@@ -25,6 +25,7 @@ object BitmapRefresher {
                 .onErrorResumeNext(Observable.empty())
                 .filter { (offset, bitmap) -> offset != null && bitmap != null }
                 .map { (offset, bitmap) -> offset!! to bitmap!! }
+                .retry(5)
     }
 
     fun readState(redis: RedisCommands<ByteArray, ByteArray>): Pair<Long?, ByteArray?> {

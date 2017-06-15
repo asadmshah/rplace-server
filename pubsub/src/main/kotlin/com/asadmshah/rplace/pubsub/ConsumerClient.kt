@@ -22,7 +22,10 @@ internal class ConsumerClient(observable: Observable<ConsumerRecord<Position, Dr
     private val subject: Subject<Pair<Long, DrawEvent>> = ReplaySubject.createWithSize(bufferSize)
 
     init {
-        observable.map { it.offset() to it.value() }.subscribe(subject)
+        observable
+                .retry(5)
+                .map { it.offset() to it.value() }
+                .subscribe(subject)
     }
 
     fun observe(offset: Long): Observable<DrawEventsBatch> {
