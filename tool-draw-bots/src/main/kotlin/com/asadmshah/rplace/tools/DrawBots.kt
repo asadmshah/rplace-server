@@ -12,10 +12,7 @@ import io.reactivex.schedulers.Schedulers
 import okio.ByteString
 import org.slf4j.LoggerFactory
 import java.awt.Color
-import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream
-import java.io.File
-import java.io.FileOutputStream
 import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.Executors
@@ -28,12 +25,10 @@ fun main(args: Array<String>) {
 
     val host = System.getenv("ENDPOINT_HOST")
     val port = System.getenv("ENDPOINT_PORT").toInt()
-    val outputDir = System.getenv("IMAGE_OUTPUT_DIR")
-    val clientCount = System.getenv("CLIENT_COUNT").toInt()
-    val intervalMillis = System.getenv("INTERVAL_MILLIS").toLong()
+    val clientCount = System.getenv("THREAD_COUNT").toInt()
+    val intervalMillis = System.getenv("HIT_INTERVAL_MILLIS").toLong()
 
     val disposables = CompositeDisposable()
-    val images = mutableListOf<BufferedImage>()
 
     for (clientIndex in 0 until clientCount) {
         LOGGER.info("Launching client #{}", clientIndex)
@@ -43,7 +38,6 @@ fun main(args: Array<String>) {
         val image = ByteArrayInputStream(bitmap).use {
             ImageIO.read(it)
         }
-        images.add(image)
 
         client.stream(offset)
                 .subscribeOn(Schedulers.from(Executors.newSingleThreadScheduledExecutor()))
@@ -98,16 +92,6 @@ fun main(args: Array<String>) {
     Runtime.getRuntime().addShutdownHook(object : Thread() {
         override fun run() {
             disposables.dispose()
-
-            images.forEachIndexed { i, image ->
-                val dir = File("$outputDir/${System.getenv("HOSTNAME")}")
-                dir.mkdirs()
-                val file = File(dir, "$i.png")
-                FileOutputStream(file).use { output ->
-                    ImageIO.write(image, "png", output)
-                }
-                LOGGER.info("Saved Image: ${file.absolutePath}")
-            }
         }
     })
 
